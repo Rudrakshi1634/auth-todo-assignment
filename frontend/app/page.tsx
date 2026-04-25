@@ -4,14 +4,40 @@ import {useState} from 'react'
 
 export default function Home(){
 
-const [loggedIn,setLoggedIn]=useState(false)
-const [identifier,setIdentifier]=useState('')
+const [isLogin,setIsLogin]=useState(true)
+
+const [username,setUsername]=useState('')
+const [email,setEmail]=useState('')
 const [password,setPassword]=useState('')
 
-const [task,setTask]=useState('')
-const [todos,setTodos]=useState<string[]>([])
+async function signup(){
 
-async function loginUser(){
+const res=await fetch(
+'http://localhost:1337/api/auth/local/register',
+{
+method:'POST',
+headers:{
+'Content-Type':'application/json'
+},
+body:JSON.stringify({
+username,
+email,
+password
+})
+}
+)
+
+const data=await res.json()
+
+if(data.jwt){
+alert('Signup Success. Now Login.')
+setIsLogin(true)
+}else{
+alert(JSON.stringify(data))
+}
+}
+
+async function login(){
 
 const res=await fetch(
 'http://localhost:1337/api/auth/local',
@@ -21,7 +47,7 @@ headers:{
 'Content-Type':'application/json'
 },
 body:JSON.stringify({
-identifier,
+identifier:username,
 password
 })
 }
@@ -30,27 +56,20 @@ password
 const data=await res.json()
 
 if(data.jwt){
-setLoggedIn(true)
-}
-else{
+alert('Login success')
+}else{
 alert('Login failed')
 }
 }
 
-function addTodo(){
-if(task==='') return
-setTodos([...todos,task])
-setTask('')
-}
-
-if(!loggedIn){
+if(isLogin){
 return(
 <div style={{padding:'40px'}}>
 <h1>Login</h1>
 
 <input
 placeholder='Username'
-onChange={(e)=>setIdentifier(e.target.value)}
+onChange={(e)=>setUsername(e.target.value)}
 />
 
 <br/><br/>
@@ -63,32 +82,55 @@ onChange={(e)=>setPassword(e.target.value)}
 
 <br/><br/>
 
-<button onClick={loginUser}>
+<button onClick={login}>
 Login
 </button>
+
+<br/><br/>
+
+<button onClick={()=>setIsLogin(false)}>
+Go To Signup
+</button>
+
 </div>
 )
 }
 
 return(
 <div style={{padding:'40px'}}>
-<h1>Todo Dashboard</h1>
+<h1>Signup</h1>
 
 <input
-value={task}
-onChange={(e)=>setTask(e.target.value)}
-placeholder='New Task'
+placeholder='Username'
+onChange={(e)=>setUsername(e.target.value)}
 />
 
-<button onClick={addTodo}>
-Add
+<br/><br/>
+
+<input
+placeholder='Email'
+onChange={(e)=>setEmail(e.target.value)}
+/>
+
+<br/><br/>
+
+<input
+type='password'
+placeholder='Password'
+onChange={(e)=>setPassword(e.target.value)}
+/>
+
+<br/><br/>
+
+<button onClick={signup}>
+Signup
 </button>
 
-{todos.map((todo,index)=>(
-<div key={index}>
-{todo}
-</div>
-))}
+<br/><br/>
+
+<button onClick={()=>setIsLogin(true)}>
+Back To Login
+</button>
 
 </div>
 )
