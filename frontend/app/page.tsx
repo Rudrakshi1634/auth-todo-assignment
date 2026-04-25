@@ -1,6 +1,6 @@
 'use client'
 
-import {useState} from 'react'
+import { useState } from 'react'
 
 export default function Home(){
 
@@ -12,8 +12,8 @@ const [password,setPassword]=useState('')
 
 async function signup(){
 
-const res=await fetch(
-'http://localhost:1337/api/auth/local/register',
+const res = await fetch(
+'https://auth-todo-assignment.onrender.com/api/auth/local/register',
 {
 method:'POST',
 headers:{
@@ -27,10 +27,10 @@ password
 }
 )
 
-const data=await res.json()
+const data = await res.json()
 
 if(data.jwt){
-alert('Signup Success. Now Login.')
+alert('Signup successful! Now login.')
 setIsLogin(true)
 }else{
 alert(JSON.stringify(data))
@@ -39,8 +39,8 @@ alert(JSON.stringify(data))
 
 async function login(){
 
-const res=await fetch(
-'http://localhost:1337/api/auth/local',
+const res = await fetch(
+'https://auth-todo-assignment.onrender.com/api/auth/local',
 {
 method:'POST',
 headers:{
@@ -53,10 +53,10 @@ password
 }
 )
 
-const data=await res.json()
+const data = await res.json()
 
 if(data.jwt){
-alert('Login success')
+alert('Login successful!')
 }else{
 alert('Login failed')
 }
