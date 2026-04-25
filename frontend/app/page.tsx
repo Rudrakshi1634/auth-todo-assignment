@@ -1,121 +1,80 @@
 'use client'
 
-import {useState} from 'react'
+import { useState } from 'react'
 
-export default function Home(){
+export default function Home() {
 
-const [isLogin,setIsLogin]=useState(true)
-const [loggedIn,setLoggedIn]=useState(false)
-
-const [username,setUsername]=useState('')
-const [password,setPassword]=useState('')
-
+const [screen,setScreen]=useState('signup')
+const [user,setUser]=useState('')
+const [pass,setPass]=useState('')
 const [savedUser,setSavedUser]=useState('')
 const [savedPass,setSavedPass]=useState('')
+const [loggedIn,setLoggedIn]=useState(false)
 
 const [task,setTask]=useState('')
 const [todos,setTodos]=useState<string[]>([])
 
-function signup(){
-
-if(!username || !password){
-alert('Fill all fields')
+function signupHandler(){
+if(!user || !pass){
+alert('Enter username and password')
 return
 }
 
-setSavedUser(username)
-setSavedPass(password)
-
-alert('Signup Successful')
-setIsLogin(true)
+setSavedUser(user)
+setSavedPass(pass)
+alert('Signup successful. Now login.')
+setScreen('login')
 }
 
-function login(){
+function loginHandler(){
 
-if(
-username===savedUser &&
-password===savedPass
-){
+if(user===savedUser && pass===savedPass){
 setLoggedIn(true)
 }
 else{
-alert('Invalid login')
-}
+alert('Wrong login')
 }
 
-function addTodo(){
-if(task==='') return
+}
+
+function addTask(){
+if(!task) return
 setTodos([...todos,task])
 setTask('')
 }
 
-function deleteTodo(i:number){
-setTodos(todos.filter((_,index)=>index!==i))
-}
-
 if(!loggedIn){
 
-if(isLogin){
+if(screen==='signup'){
 return(
-<div style={{padding:'40px'}}>
-<h1>Login</h1>
-
-<input
-placeholder='Username'
-onChange={(e)=>setUsername(e.target.value)}
-/>
-
-<br/><br/>
-
-<input
-type='password'
-placeholder='Password'
-onChange={(e)=>setPassword(e.target.value)}
-/>
-
-<br/><br/>
-
-<button onClick={login}>
-Login
-</button>
-
-<br/><br/>
-
-<button onClick={()=>setIsLogin(false)}>
-Signup Instead
-</button>
-
-</div>
-)
-}
-
-return(
-<div style={{padding:'40px'}}>
+<div style={{padding:40}}>
 <h1>Signup</h1>
 
 <input
-placeholder='Username'
-onChange={(e)=>setUsername(e.target.value)}
+placeholder="Username"
+value={user}
+onChange={(e)=>setUser(e.target.value)}
 />
 
 <br/><br/>
 
 <input
-type='password'
-placeholder='Password'
-onChange={(e)=>setPassword(e.target.value)}
+type="password"
+placeholder="Password"
+value={pass}
+onChange={(e)=>setPass(e.target.value)}
 />
 
 <br/><br/>
 
-<button onClick={signup}>
+<button onClick={signupHandler}>
 Signup
 </button>
 
 <br/><br/>
 
-<button onClick={()=>setIsLogin(true)}>
-Back To Login
+<button onClick={()=>setScreen('login')}>
+Go To Login
 </button>
 
 </div>
@@ -123,36 +82,63 @@ Back To Login
 }
 
 return(
-<div style={{padding:'40px'}}>
+<div style={{padding:40}}>
+<h1>Login</h1>
 
-<h1>Todo Dashboard</h1>
+<input
+placeholder="Username"
+value={user}
+onChange={(e)=>setUser(e.target.value)}
+/>
+
+<br/><br/>
+
+<input
+type="password"
+placeholder="Password"
+value={pass}
+onChange={(e)=>setPass(e.target.value)}
+/>
+
+<br/><br/>
+
+<button onClick={loginHandler}>
+Login
+</button>
+
+<br/><br/>
+
+<button onClick={()=>setScreen('signup')}>
+Back To Signup
+</button>
+
+</div>
+)
+}
+
+return(
+<div style={{padding:40}}>
+<h1>Todo App</h1>
 
 <input
 value={task}
+placeholder="Add task"
 onChange={(e)=>setTask(e.target.value)}
-placeholder='Add task'
 />
 
-<button onClick={addTodo}>
+<button onClick={addTask}>
 Add
 </button>
 
 <br/><br/>
 
-{todos.map((todo,index)=>(
-<div key={index}>
-{todo}
-
-<button
-onClick={()=>deleteTodo(index)}
-style={{marginLeft:'10px'}}
->
-Delete
-</button>
-
+{todos.map((t,i)=>(
+<div key={i}>
+{t}
 </div>
 ))}
 
 </div>
 )
+
 }
