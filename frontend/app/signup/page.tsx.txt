@@ -1,0 +1,22 @@
+'use client'
+
+export default function Signup() {
+return (
+<div style={{padding:"40px"}}>
+
+<h1>Signup Page</h1>
+
+<input placeholder="Username" />
+<br/><br/>
+
+<input placeholder="Email" />
+<br/><br/>
+
+<input placeholder="Password" />
+<br/><br/>
+
+<button>Register</button>
+
+</div>
+)
+}
