@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export default function Home() {
+export default function Home(){
 
 const [screen,setScreen]=useState('signup')
 const [user,setUser]=useState('')
@@ -14,15 +14,41 @@ const [loggedIn,setLoggedIn]=useState(false)
 const [task,setTask]=useState('')
 const [todos,setTodos]=useState<string[]>([])
 
+useEffect(()=>{
+
+const storedUser=localStorage.getItem('user')
+const storedPass=localStorage.getItem('pass')
+const storedTodos=localStorage.getItem('todos')
+
+if(storedUser){
+setSavedUser(storedUser)
+setScreen('login')
+}
+
+if(storedPass){
+setSavedPass(storedPass)
+}
+
+if(storedTodos){
+setTodos(JSON.parse(storedTodos))
+}
+
+},[])
+
 function signupHandler(){
+
 if(!user || !pass){
 alert('Enter username and password')
 return
 }
 
+localStorage.setItem('user',user)
+localStorage.setItem('pass',pass)
+
 setSavedUser(user)
 setSavedPass(pass)
-alert('Signup successful. Now login.')
+
+alert('Signup successful')
 setScreen('login')
 }
 
@@ -38,9 +64,35 @@ alert('Wrong login')
 }
 
 function addTask(){
+
 if(!task) return
-setTodos([...todos,task])
+
+const updated=[...todos,task]
+
+setTodos(updated)
+localStorage.setItem(
+'todos',
+JSON.stringify(updated)
+)
+
 setTask('')
+}
+
+function deleteTask(index:number){
+
+const updated=
+todos.filter((_,i)=>i!==index)
+
+setTodos(updated)
+
+localStorage.setItem(
+'todos',
+JSON.stringify(updated)
+)
+}
+
+function logout(){
+setLoggedIn(false)
 }
 
 if(!loggedIn){
@@ -51,7 +103,7 @@ return(
 <h1>Signup</h1>
 
 <input
-placeholder="Username"
+placeholder='Username'
 value={user}
 onChange={(e)=>setUser(e.target.value)}
 />
@@ -59,8 +111,8 @@ onChange={(e)=>setUser(e.target.value)}
 <br/><br/>
 
 <input
-type="password"
-placeholder="Password"
+type='password'
+placeholder='Password'
 value={pass}
 onChange={(e)=>setPass(e.target.value)}
 />
@@ -86,7 +138,7 @@ return(
 <h1>Login</h1>
 
 <input
-placeholder="Username"
+placeholder='Username'
 value={user}
 onChange={(e)=>setUser(e.target.value)}
 />
@@ -94,8 +146,8 @@ onChange={(e)=>setUser(e.target.value)}
 <br/><br/>
 
 <input
-type="password"
-placeholder="Password"
+type='password'
+placeholder='Password'
 value={pass}
 onChange={(e)=>setPass(e.target.value)}
 />
@@ -122,7 +174,7 @@ return(
 
 <input
 value={task}
-placeholder="Add task"
+placeholder='Add task'
 onChange={(e)=>setTask(e.target.value)}
 />
 
@@ -130,11 +182,27 @@ onChange={(e)=>setTask(e.target.value)}
 Add
 </button>
 
+<button
+onClick={logout}
+style={{marginLeft:'10px'}}
+>
+Logout
+</button>
+
 <br/><br/>
 
 {todos.map((t,i)=>(
 <div key={i}>
+
 {t}
+
+<button
+onClick={()=>deleteTask(i)}
+style={{marginLeft:'10px'}}
+>
+Delete
+</button>
+
 </div>
 ))}
 
